@@ -35,11 +35,11 @@ docker container prune -f
 ```
 
 ## Run the custom model
-1. Create an account and obtain an Upshot ApiKey [here](https://developer.upshot.xyz)
+1. Create an account and obtain an Upshot ApiKey [here](https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest)
 
 2. Clone the git repository
 ```
-git clone https://github.com/sarox0987/allora-worker.git
+git clone https://github.com/pesar12/allora-worker1.git
 cd allora-worker
 ```
 
@@ -49,7 +49,7 @@ bash run.sh
 ```
 * **Index:** Set your worker index.(the index gives you the ability to run multiple workers on one server)
 * **Mnemonic Phrase:** Import you menmonic phrase
-* **Upshot ApiKey:** Import your upshot apikey
+* **coinmarcetcap ApiKey:** Import your upshot coin marcrtcap
 
 
 make sure both `custom-worker-0` & `custom-inference` containers are running with `docker ps`
