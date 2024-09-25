@@ -60,8 +60,8 @@ func main() {
 			return
 		}
 		rate = multiplyChangeRate(rate)
-		close, _ := strconv.ParseFloat(k.Close, 64)
-		price := close + (close * rate)
+		closingPrice, _ := strconv.ParseFloat(k.Close, 64)
+		price := closingPrice + (closingPrice * rate)
 
 		c.String(200, strconv.FormatFloat(price, 'g', -1, 64))
 	})
@@ -74,10 +74,12 @@ func handleMemeRequest(c *gin.Context, cfg *envConfig) {
 
 	if cfg.APIKey == "" {
 		c.String(400, "need api key")
+		return
 	}
 
 	if cfg.RPC == "" {
-		panic("Invalid env.json file")
+		c.String(400, "Invalid env.json file")
+		return
 	}
 
 	lb, err := getLatestBlock(cfg.RPC)
@@ -92,7 +94,7 @@ func handleMemeRequest(c *gin.Context, cfg *envConfig) {
 		return
 	}
 
-	mp, err := getMemePrice(meme.Data.Platform, meme.Data.Address)
+	mp, err := getMemePrice(meme.Data.TokenSymbol, meme.Data.Address)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -107,7 +109,6 @@ func handleMemeRequest(c *gin.Context, cfg *envConfig) {
 }
 
 func getLastKlines(symbol, interval string) (*Kline, error) {
-
 	ur, _ := url.Parse("https://api.binance.com/api/v1/klines")
 	queryParams := url.Values{}
 	queryParams.Add("endTime", strconv.Itoa(int(time.Now().UnixMilli())))
@@ -137,7 +138,7 @@ func getLastKlines(symbol, interval string) (*Kline, error) {
 	}
 
 	if len(ks) == 0 {
-		return nil, err
+		return nil, fmt.Errorf("no kline data received")
 	}
 
 	kline := ks[0]
@@ -179,8 +180,7 @@ func multiplyChangeRate(changeRate float64) float64 {
 	return newChangeRate + changeRate
 }
 
-// GetTokenPrice function takes the token address as a string and returns the price as a float64
-func getMemePrice(network, memeAddress string) (string, error) {
+func getMemePrice(symbol, memeAddress string) (string, error) {
 	url := fmt.Sprintf("https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol=%s&convert=USD", symbol)
 
 	req, err := http.NewRequest(http.MethodGet, url, nil)
@@ -270,7 +270,7 @@ type memeOracleResponse struct {
 }
 
 func getMemeOracleData(blockHeight string, apiKey string) (*memeOracleResponse, error) {
-	url := fmt.Sprintf("", blockHeight)
+	url := fmt.Sprintf("YOUR_ORACLE_DATA_URL/%s", blockHeight) // به جای YOUR_ORACLE_DATA_URL URL واقعی را قرار دهید.
 
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
