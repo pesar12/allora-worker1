@@ -5,14 +5,14 @@ rpc="https://rpc.ankr.com/allora_testnet"
 
 read -p "Enter your worker index: " index
 read -p "Enter your mnemonic phrase: " mnemonic_phrase
-read -p "Enter your upshot apikey: " upshot_apikey
+read -p "Enter your CoinMarketCap API key: " cmc_apikey
 
 mkdir worker-data-$index 
 chmod -R 777 worker-data-$index
 
 cat << EOF > .env
 RPC=$rpc
-UPSHOT_APIKEY="$upshot_apikey"
+CMC_APIKEY="$cmc_apikey"
 EOF
 
 
